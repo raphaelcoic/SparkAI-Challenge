@@ -6,7 +6,7 @@ sys.path.append(str(ROOT / "code"))
 
 MAP_DIR = ROOT / "examples"
 
-from Map import AbstractMap, Map
+from GameMap import AbstractMap, Map
 
 # Test ABSTRACT map (avec distances)
 print("=== ABSTRACT MAP (visualisation distances) ===")
