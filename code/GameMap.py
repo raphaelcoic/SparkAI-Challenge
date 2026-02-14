@@ -157,6 +157,28 @@ class Map(AbstractMap):
         outgoing = [v for (u, v) in self.edges if u == vertex]
         incoming = [u for (u, v) in self.edges if v == vertex]
         return list(set(outgoing + incoming))
+    
+    def distance(self, u: str, v: str) -> int:
+        """Distance between two vertices using BFS since all edges have weight 1."""
+        import math
+        from collections import deque
+
+        visited = set()
+        queue = deque([(u, 0)])  # (vertex, distance)
+        visited.add(u)
+
+        while queue:
+            vertex, dist = queue.popleft()
+
+            if vertex == v:
+                return dist
+
+            for neighbor in self.neighbors(vertex):
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, dist + 1))
+
+        return math.inf  # No path found
 
     @classmethod
     def from_file(cls, filename: str):
