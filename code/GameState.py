@@ -1,13 +1,15 @@
 from GameMap import Map
 
-class Game_State:
+class GameState:
     """Global state of the game."""
 
     def __init__(self):
         self.map = None
-        self.units = {}  # {player_id: [units]}
+        self.units = {}     #{id_player: unit}
         self.scores = {}
 
     def load_map(self, filename: str):
         self.map = Map.from_file(filename)
         print(f"Game loaded")
+
+
