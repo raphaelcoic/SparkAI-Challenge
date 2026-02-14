@@ -1,8 +1,8 @@
 from GameMap import *
 
-class worker:
+class Worker:
     """Class for a worker unit."""
-    def __init__(self, team = None, position = None):
+    def __init__(self, player = None, position = None):
         self.player = player
         self.position = position
         self.health = 5
@@ -10,9 +10,10 @@ class worker:
         self.extraction_speed = 1
         self.load = 0
         self.capacity = 3
+        self.map = None
 
-    def set_map(self, map):
-        self.map = map
+    def set_map(self, gamemap):
+        self.map = gamemap
 
     def move(self, v):
         """Moves the worker to v if it is adjacent to it."""
