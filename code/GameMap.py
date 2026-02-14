@@ -9,9 +9,10 @@ class AbstractMap:
         self.resources = resources
         self.base1 = base1
         self.base2 = base2
+        self.grid_matrix = []
         self.is_expanded = False
 
-    def visualize_grid(self, grid_matrix: list[list[str]], filename: str = "grid_map.png", dpi: int = 600):
+    def visualize_grid(self, filename: str = "grid_map.png", dpi: int = 200):
         """
         Visualize AbstractMap using GRID MATRIX with ULTRA-HIGH RESOLUTION.
         """
@@ -29,13 +30,13 @@ class AbstractMap:
                 edge_labels[(u, v)] = str(dist)
 
             # Parse grid → positions fixes
-            rows, cols = len(grid_matrix), len(grid_matrix[0])
+            rows, cols = len(self.grid_matrix), len(self.grid_matrix[0])
             pos = {}
             resources_pos = {}
 
             for i in range(rows):
                 for j in range(cols):
-                    vertex = grid_matrix[i][j]
+                    vertex = self.grid_matrix[i][j]
                     if vertex != '0':
                         x = j / (cols - 1)
                         y = 1 - i / (rows - 1)
@@ -103,6 +104,7 @@ class AbstractMap:
         """Load ABSTRACT map (no expansion)."""
         temp_edges = set()
         temp_resources = {}
+        grid_matrix = []
 
         with open(filename, "r", encoding="utf-8") as f:
             header = f.readline().strip().split()
@@ -126,11 +128,15 @@ class AbstractMap:
 
             for line in f:
                 if line.strip():
-                    vertex, quantity = line.strip().split()
-                    temp_resources[vertex] = int(quantity)
-
-        return cls(temp_edges, temp_resources, base1, base2)
-
+                    parts = line.strip().split()
+                    if len(parts) <= 2:
+                        vertex, quantity = parts
+                        temp_resources[vertex] = int(quantity)
+                    else:
+                        grid_matrix.append(parts)
+        instance = cls(temp_edges, temp_resources, base1, base2)
+        instance.grid_matrix = grid_matrix
+        return instance
 
 class Map(AbstractMap):
     """
@@ -139,48 +145,18 @@ class Map(AbstractMap):
     """
 
     def __init__(self, edges: set[tuple[str, str]], resources: dict[str, int], base1: str, base2: str):
-        super().__init__(set(), {}, base1, base2)  # Dummy abstract
+        super().__init__(set(), {}, base1, base2)
         self.edges = edges  # (u, v) distance=1
         self.resources = resources
         self.is_expanded = True
         self.abstract_map = None  # Cache pour visualisation
 
-    def get_abstract_map(self):
-        """Reconstruct abstract map from expanded edges."""
-        if self.abstract_map is None:
-            # Reconstruit graphe original depuis étendu
-            abstract_edges = set()
-            # Logique pour regrouper intermédiaires → distances originales
-            # (simplifié ici - utilise ton fichier original)
-            pass
-        return self.abstract_map
 
     def neighbors(self, vertex: str) -> list[str]:
         """Unit neighbors (distance=1)."""
         outgoing = [v for (u, v) in self.edges if u == vertex]
         incoming = [u for (u, v) in self.edges if v == vertex]
         return list(set(outgoing + incoming))
-
-    def visualize(self, filename: str = "expanded_map.png"):
-        """Visualize EXPANDED map (unit grid)."""
-        try:
-            import networkx as nx
-            import matplotlib.pyplot as plt
-
-            G = nx.Graph()
-            for u, v in self.edges:
-                G.add_edge(u, v)
-
-            pos = nx.spring_layout(G)
-            plt.figure(figsize=(14, 10))
-            nx.draw(G, pos, with_labels=True, node_color='lightgreen',
-                    node_size=500, font_size=6)
-            plt.title(f"Expanded Map: {len(self.resources)} cells")
-            plt.savefig(filename, dpi=150, bbox_inches='tight')
-            plt.show()
-            print(f"Expanded map saved: {filename}")
-        except ImportError:
-            print("Install: pip install networkx matplotlib")
 
     @classmethod
     def from_file(cls, filename: str):
@@ -201,6 +177,4 @@ class Map(AbstractMap):
                 current = inter_cell
             final_edges.add((current, v))
 
-        game_map = cls(final_edges, final_resources, abstract.base1, abstract.base2)
-        game_map.abstract_map = abstract  # Lien vers original
-        return game_map
+        return cls(final_edges, final_resources, abstract.base1, abstract.base2)
