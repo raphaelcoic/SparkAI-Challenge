@@ -163,10 +163,13 @@ class Map:
     Inherits visualization from AbstractMap.
     """
 
-    def __init__(self, edges: set[tuple[str, str]], resources: dict[str, int], sparking_spots: dict[str, bool], base1: str, base2: str):
+    def __init__(self, edges: set[tuple[str, str]], resources: dict[str, int],
+                 sparking_spots: dict[str, bool], base1: str, base2: str):
         self.edges = edges  # (u, v) distance=1
         self.resources = resources
         self.sparking_spots = sparking_spots
+        self.base1 = base1
+        self.base2 = base2
         self.is_expanded = True
         self.abstract_map = None  # Cache pour visualisation
 
