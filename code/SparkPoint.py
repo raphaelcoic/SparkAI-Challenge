@@ -37,9 +37,9 @@ class SparkPoint:
         for unit in self.units:
             if self.position == unit.position :
                 if unit.player_id == 'p1':
-                    self.value += unit.spark_speed * unit.get_multiplier('spark_boost')
+                    self.value += unit.spark_speed * unit.get_multiplier('spark')
                 else:
-                    self.value -= unit.spark_speed * unit.get_multiplier('spark_boost')
+                    self.value -= unit.spark_speed * unit.get_multiplier('spark')
 
 
     def update_score(self, score = 1):
