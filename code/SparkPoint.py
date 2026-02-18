@@ -1,5 +1,3 @@
-from pywin.tools.TraceCollector import outputWindow
-
 
 class SparkPoint:
     """Represents a Spark Point."""

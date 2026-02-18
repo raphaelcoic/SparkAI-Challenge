@@ -1,3 +1,5 @@
+from pathlib import Path
+
 class AbstractMap:
     """
     ABSTRACT map with original distances (for visualization).
@@ -116,7 +118,7 @@ class AbstractMap:
             print("Install: pip install networkx matplotlib numpy")
 
     @classmethod
-    def from_file(cls, filename: str):
+    def from_file(cls, filename : Path):
         """Load ABSTRACT map (no expansion)."""
         temp_edges = set()
         temp_resources = {}
@@ -211,7 +213,7 @@ class Map:
         return self.resources.get(vertex, 0)
 
     @classmethod
-    def from_file(cls, filename: str):
+    def from_file(cls, filename : Path):
         """Load → EXPAND → unit-ready map."""
         # Charge abstract D'ABORD
         abstract = AbstractMap.from_file(filename)
