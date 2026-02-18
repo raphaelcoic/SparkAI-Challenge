@@ -1,6 +1,5 @@
 from __future__ import annotations
-from GameMap import *
-from code.GameState import GameState
+import code.GameState as GameState
 
 
 class Unit:
@@ -10,6 +9,7 @@ class Unit:
         self.game_state = game_state
         self.map = game_state.map
         self.player_id = player_id
+        self.my_units = game_state.units[player_id]
         self.id = unit_id
         self.type = None
         self.position = self.map.base1 if player_id == 'p1' else self.map.base2
@@ -280,9 +280,8 @@ class Healer(Army):
         """Heals every unit in the healing range."""
 
         assert self.wait == 0, "Unit is waiting"
-        for unit in self.game_state.units():
-            if (unit.player_id == self.player_id
-                    and self.map.distance(self.position, unit.position) <= self.healing_range
+        for unit in self.my_units:
+            if (self.map.distance(self.position, unit.position) <= self.healing_range
                     and unit.health < unit.max_health):
                 unit.health = min(unit.health + self.healing_amount, unit.max_health)
         self.wait = 4
@@ -313,10 +312,8 @@ class Commandant(Army):
         """Boosts every unit around."""
 
         assert self.wait == 0, "Unit is waiting"
-        for unit in self.game_state.units():
-            if (unit.player_id == self.player_id
-                    and unit.type == "army"
-                    and unit.position == self.position):
+        for unit in self.my_units:
+            if unit.type == "army" and unit.position == self.position:
                 unit.apply_boost("speed", 1.5, 2)
                 unit.apply_boost("damage", 1.5, 2)
         self.wait = 4
